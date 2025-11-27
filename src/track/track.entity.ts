@@ -18,11 +18,11 @@ export class Track {
 
   @IsUUID(4)
   @IsOptional()
-  artistId: string | null;
+  artistId?: string | null = null;
 
   @IsUUID(4)
   @IsOptional()
-  albumId: string | null;
+  albumId?: string | null = null;
 
   @IsInt()
   @IsPositive()
