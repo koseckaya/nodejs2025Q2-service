@@ -1,6 +1,7 @@
 export const ERROR_MSG = {
   USER_CREATE_INVALID_DATA: 'Invalid request, login, password are required',
   TRACK_CREATE_INVALID_DATA: 'Invalid request, name and duration are required',
+  ARTIST_CREATE_INVALID_DATA: 'Invalid request, name and grammy are required',
   ID_NOT_FOUND: 'Record not found, id:',
 };
 
