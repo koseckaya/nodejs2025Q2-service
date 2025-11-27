@@ -23,14 +23,14 @@ export class DataService<T extends DataRecord> {
     );
   }
 
-  findOne(id: string) {
-    const record = this.getRecord(id);
+  findOne(id: string, checkExists = true) {
+    const record = this.getRecord(id, checkExists);
     return this.plainToInstance(record);
   }
 
-  getRecord(id: string) {
+  getRecord(id: string, checkExists = true) {
     const record = this.records[id];
-    if (!record) {
+    if (!record && checkExists) {
       throw new NotFoundException(`${ERROR_MSG.ID_NOT_FOUND} ${id}`);
     }
     return record;

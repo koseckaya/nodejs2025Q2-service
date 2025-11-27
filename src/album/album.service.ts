@@ -1,24 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataService } from 'src/data/data.service';
 import { Album } from './album.entity';
 import { TrackService } from 'src/track/track.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class AlbumService extends DataService<Album> {
-  constructor(private readonly trackService: TrackService) {
+  constructor(
+    @Inject(forwardRef(() => TrackService))
+    private readonly trackService: TrackService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+  ) {
     super();
   }
 
   remove(id: string) {
     super.remove(id);
     this.trackService.clearReference(id, 'albumId');
+    this.favoritesService.removeFromFavorites(id);
   }
 
   clearReference(id: string, field: 'artistId') {
-    const tracks = this.findAll().filter((track) => track[field] === id);
+    const albums = this.findAll().filter((album) => album[field] === id);
 
-    tracks.forEach((track) => {
-      track[field] = null;
+    albums.forEach((album) => {
+      album[field] = null;
     });
   }
 }
