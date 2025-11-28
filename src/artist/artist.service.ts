@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataService } from 'src/data/data.service';
-import { Artist } from './artist.entity';
+import { Artist } from './entity/artist.entity';
 import { TrackService } from 'src/track/track.service';
 import { AlbumService } from 'src/album/album.service';
 import { FavoritesService } from 'src/favorites/favorites.service';

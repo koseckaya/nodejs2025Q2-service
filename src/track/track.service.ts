@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataService } from 'src/data/data.service';
-import { Track } from './track.entity';
+import { Track } from './entity/track.entity';
 import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()

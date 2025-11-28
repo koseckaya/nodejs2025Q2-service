@@ -1,10 +1,10 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, OpenAPIObject } from '@nestjs/swagger';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as yaml from 'js-yaml';
+import * as swaggerUi from 'swagger-ui-express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,7 +22,7 @@ async function bootstrap() {
   );
   const swaggerDocument = yaml.load(file);
 
-  SwaggerModule.setup('api', app, swaggerDocument as OpenAPIObject);
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   await app.listen(4000);
 }
