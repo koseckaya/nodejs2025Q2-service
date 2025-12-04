@@ -1,56 +1,61 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ERROR_MSG } from '../constants';
-import { v4 as uuidv4 } from 'uuid';
+import { DeepPartial, Repository } from 'typeorm';
+import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 interface DataRecord {
-  id?: string;
+  id: string;
 }
 
 @Injectable()
-export class DataService<T extends DataRecord> {
-  private records: { [id: string]: T } = {};
+export abstract class DataService<T extends DataRecord> {
+  protected abstract entityClass: ClassConstructor<T>;
 
-  create(record: Partial<T>) {
-    const id = uuidv4();
-    const newRecord = { id, ...record } as T;
-    this.records[id] = newRecord;
+  constructor(protected repository: Repository<T>) {}
+
+  async create(record: DeepPartial<T>): Promise<T> {
+    const newRecord = this.repository.create(record);
+    await this.repository.save(newRecord);
     return this.plainToInstance(newRecord);
   }
 
-  findAll() {
-    return Object.values(this.records).map((record) =>
-      this.plainToInstance(record),
-    );
+  async findAll(): Promise<T[]> {
+    const records = await this.repository.find();
+    return records.map((record) => this.plainToInstance(record));
   }
 
-  findOne(id: string, checkExists = true) {
-    const record = this.getRecord(id, checkExists);
-    return this.plainToInstance(record);
+  async findOne(id: string, checkExists = true): Promise<T> {
+    const record = await this.repository.findOne({ where: { id } as any });
+    if (!record && checkExists) {
+      throw new NotFoundException(`${ERROR_MSG.ID_NOT_FOUND} ${id}`);
+    }
+    return record ? this.plainToInstance(record) : null;
   }
 
-  getRecord(id: string, checkExists = true) {
-    const record = this.records[id];
+  async getRecord(id: string, checkExists = true): Promise<T> {
+    const record = await this.findOne(id, checkExists);
     if (!record && checkExists) {
       throw new NotFoundException(`${ERROR_MSG.ID_NOT_FOUND} ${id}`);
     }
     return record;
   }
 
-  update(id: string, record: Partial<T>) {
-    const recordForUpdate = this.getRecord(id);
-    const updatedRecord = { ...recordForUpdate, ...record };
-    this.records[id] = updatedRecord;
+  async update(id: string, record: DeepPartial<T>): Promise<T> {
+    await this.repository.update(id, record as any);
+    const updatedRecord = await this.findOne(id);
     return this.plainToInstance(updatedRecord);
   }
 
-  remove(id: string) {
-    const recordForUpdate = this.getRecord(id);
-    if (recordForUpdate) {
-      delete this.records[id];
+  async remove(id: string): Promise<void> {
+    const record = await this.findOne(id);
+    if (record) {
+      await this.repository.remove(record);
     }
   }
 
   protected plainToInstance(record: T): T {
-    return record;
+    return plainToInstance(this.entityClass, record as object, {
+      excludeExtraneousValues: true,
+    });
   }
 }

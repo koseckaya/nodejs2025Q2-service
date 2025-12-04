@@ -1,9 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { DataService } from './data.service';
 
 @Global()
-@Module({
-  providers: [DataService],
-  exports: [DataService],
-})
+@Module({})
 export class DataModule {}

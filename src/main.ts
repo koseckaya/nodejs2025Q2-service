@@ -24,6 +24,6 @@ async function bootstrap() {
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-  await app.listen(4000);
+  await app.listen(process.env.PORT || 4000);
 }
 bootstrap();

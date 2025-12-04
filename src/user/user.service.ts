@@ -3,40 +3,46 @@ import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { DataService } from 'src/data/data.service';
-import { plainToInstance } from 'class-transformer';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService extends DataService<User> {
-  create(createUserDto: CreateUserDto) {
-    const user = {
+  protected entityClass = User;
+
+  constructor(
+    @InjectRepository(User)
+    userRepository: Repository<User>,
+  ) {
+    super(userRepository);
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return super.create({
       ...createUserDto,
       version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-
-    return super.create(user);
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
   }
 
-  getCurrentPassword(id: string): string {
-    const record = this.getRecord(id);
-    return record.password;
+  async getCurrentPassword(id: string): Promise<string> {
+    const user = await this.repository
+      .createQueryBuilder('user')
+      .select('user.password')
+      .where('user.id = :id', { id })
+      .getOne();
+    return user?.password;
   }
 
-  updatePassword(
+  async updatePassword(
     id: string,
     updatePasswordDto: UpdatePasswordDto,
-  ): Omit<User, 'password'> {
-    const user = this.getRecord(id);
-
-    user.password = updatePasswordDto.newPassword;
-    user.version += 1;
-    user.updatedAt = Date.now();
-
-    return this.findOne(id);
-  }
-
-  protected plainToInstance(record: User): User {
-    return plainToInstance(User, record);
+  ): Promise<User> {
+    return this.update(id, {
+      password: updatePasswordDto.newPassword,
+      version: (await this.findOne(id)).version + 1,
+      updatedAt: new Date(),
+    });
   }
 }

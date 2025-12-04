@@ -3,29 +3,39 @@ import { DataService } from 'src/data/data.service';
 import { Album } from './entity/album.entity';
 import { TrackService } from 'src/track/track.service';
 import { FavoritesService } from 'src/favorites/favorites.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumService extends DataService<Album> {
+  protected entityClass = Album;
+
   constructor(
+    @InjectRepository(Album)
+    albumRepository: Repository<Album>,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
     @Inject(forwardRef(() => FavoritesService))
     private readonly favoritesService: FavoritesService,
   ) {
-    super();
+    super(albumRepository);
   }
 
-  remove(id: string) {
-    super.remove(id);
-    this.trackService.clearReference(id, 'albumId');
-    this.favoritesService.removeFromFavorites(id);
+  async remove(id: string): Promise<void> {
+    await super.remove(id);
+    await this.trackService.clearReference(id, 'albumId');
+    await this.favoritesService.removeFromFavorites(id);
   }
 
-  clearReference(id: string, field: 'artistId') {
-    const albums = this.findAll().filter((album) => album[field] === id);
+  async clearReference(id: string, field: 'artistId'): Promise<void> {
+    const albums = await this.repository
+      .createQueryBuilder()
+      .where(`${field} = :id`, { id })
+      .getMany();
 
-    albums.forEach((album) => {
+    for (const album of albums) {
       album[field] = null;
-    });
+      await this.repository.save(album);
+    }
   }
 }
