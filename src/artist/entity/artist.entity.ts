@@ -18,15 +18,17 @@ export class Artist {
   @Expose()
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
   @IsBoolean()
   @IsNotEmpty({ message: ERROR_MSG.ARTIST_CREATE_INVALID_DATA })
   @Expose()
   grammy: boolean;
 
   @OneToMany(() => Album, (album) => album.artist)
+  @Expose()
   albums: Album[];
 
   @OneToMany(() => Track, (track) => track.artist)
+  @Expose()
   tracks: Track[];
 }

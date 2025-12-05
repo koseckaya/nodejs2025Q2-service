@@ -5,12 +5,14 @@ import { TrackModule } from '../track/track.module';
 import { FavoritesModule } from 'src/favorites/favorites.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Album } from './entity/album.entity';
+import { ArtistModule } from 'src/artist/artist.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Album]),
     forwardRef(() => TrackModule),
     forwardRef(() => FavoritesModule),
+    ArtistModule,
   ],
   controllers: [AlbumController],
   providers: [AlbumService],

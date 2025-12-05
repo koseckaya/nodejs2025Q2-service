@@ -94,8 +94,8 @@ export class TrackService extends DataService<Track> {
     field: 'albumId' | 'artistId',
   ): Promise<void> {
     const tracks = await this.repository
-      .createQueryBuilder()
-      .where(`${field} = :id`, { id })
+      .createQueryBuilder('track')
+      .where(`track.${field} = :id`, { id })
       .getMany();
 
     for (const track of tracks) {

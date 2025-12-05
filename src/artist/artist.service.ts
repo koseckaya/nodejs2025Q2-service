@@ -25,10 +25,12 @@ export class ArtistService extends DataService<Artist> {
   }
 
   async remove(id: string): Promise<void> {
-    await super.remove(id);
-
-    await this.trackService.clearReference(id, 'artistId');
-    await this.albumService.clearReference(id, 'artistId');
-    await this.favoritesService.removeFromFavorites(id);
+    const artist = await this.findOne(id);
+    if (artist) {
+      await this.trackService.clearReference(id, 'artistId');
+      await this.albumService.clearReference(id, 'artistId');
+      await this.favoritesService.removeFromFavorites(id);
+      await this.repository.remove(artist);
+    }
   }
 }

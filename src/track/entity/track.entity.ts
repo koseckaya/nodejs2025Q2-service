@@ -20,18 +20,18 @@ export class Track {
   name: string;
 
   @ManyToOne(() => Artist, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'artist_id' })
+  @JoinColumn({ name: 'artistId' })
   artist: Artist;
 
-  @Column({ name: 'artist_id', nullable: true })
+  @Column({ nullable: true })
   @Expose()
   artistId: string;
 
   @ManyToOne(() => Album, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'album_id' })
+  @JoinColumn({ name: 'albumId' })
   album: Album;
 
-  @Column({ name: 'album_id', nullable: true })
+  @Column({ nullable: true })
   @Expose()
   albumId: string;
 

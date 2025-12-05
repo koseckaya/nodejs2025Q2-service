@@ -13,9 +13,9 @@ export class Favorites {
 
   @ManyToMany(() => Artist)
   @JoinTable({
-    name: 'favorites_artists',
-    joinColumn: { name: 'favorites_id' },
-    inverseJoinColumn: { name: 'artist_id' },
+    name: 'favoritesArtists',
+    joinColumn: { name: 'favoritesId' },
+    inverseJoinColumn: { name: 'artistId' },
   })
   @IsArray()
   @IsNotEmpty()
@@ -24,9 +24,9 @@ export class Favorites {
 
   @ManyToMany(() => Album)
   @JoinTable({
-    name: 'favorites_albums',
-    joinColumn: { name: 'favorites_id' },
-    inverseJoinColumn: { name: 'album_id' },
+    name: 'favoritesAlbums',
+    joinColumn: { name: 'favoritesId' },
+    inverseJoinColumn: { name: 'albumId' },
   })
   @IsArray()
   @IsNotEmpty()
@@ -35,9 +35,9 @@ export class Favorites {
 
   @ManyToMany(() => Track)
   @JoinTable({
-    name: 'favorites_tracks',
-    joinColumn: { name: 'favorites_id' },
-    inverseJoinColumn: { name: 'track_id' },
+    name: 'favoritesTracks',
+    joinColumn: { name: 'favoritesId' },
+    inverseJoinColumn: { name: 'trackId' },
   })
   @IsArray()
   @IsNotEmpty()
