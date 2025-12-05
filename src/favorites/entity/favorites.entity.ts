@@ -3,10 +3,12 @@ import { Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Artist } from '../../artist/entity/artist.entity';
 import { Album } from '../../album/entity/album.entity';
 import { Track } from '../../track/entity/track.entity';
+import { Expose } from 'class-transformer';
 
 @Entity('favorites')
 export class Favorites {
   @PrimaryGeneratedColumn('uuid')
+  @Expose()
   id: string;
 
   @ManyToMany(() => Artist)
@@ -17,6 +19,7 @@ export class Favorites {
   })
   @IsArray()
   @IsNotEmpty()
+  @Expose()
   artists: Artist[];
 
   @ManyToMany(() => Album)
@@ -27,6 +30,7 @@ export class Favorites {
   })
   @IsArray()
   @IsNotEmpty()
+  @Expose()
   albums: Album[];
 
   @ManyToMany(() => Track)
@@ -37,5 +41,6 @@ export class Favorites {
   })
   @IsArray()
   @IsNotEmpty()
+  @Expose()
   tracks: Track[];
 }
