@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsString, IsUUID, Min } from 'class-validator';
 import { ERROR_MSG } from '../../../src/constants';
 import { CreateDateColumn, UpdateDateColumn, BeforeUpdate } from 'typeorm';
@@ -34,6 +34,7 @@ export class User {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
+  @Transform(({ value }) => (value instanceof Date ? value.getTime() : value))
   @Expose()
   createdAt: Date;
 
@@ -42,6 +43,7 @@ export class User {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
+  @Transform(({ value }) => (value instanceof Date ? value.getTime() : value))
   @Expose()
   updatedAt: Date;
 

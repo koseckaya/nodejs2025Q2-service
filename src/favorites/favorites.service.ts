@@ -88,7 +88,7 @@ export class FavoritesService {
   }
 
   async addAlbum(id: string) {
-    const album = await this.albumService.findOne(id);
+    const album = await this.albumService.findOne(id, false);
     if (!album) {
       throw new UnprocessableEntityException('Album does not exist');
     }
