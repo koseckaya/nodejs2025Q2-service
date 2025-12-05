@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   ForbiddenException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -36,7 +37,7 @@ export class UserController {
   }
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto) {
     const passwordHash = await hash(createUserDto.password, SALT_ROUNDS);
     return this.userService.create({
@@ -73,7 +74,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.findOne(id);
     if (!user) {
