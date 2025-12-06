@@ -41,6 +41,10 @@ export abstract class DataService<T extends DataRecord> {
   }
 
   async update(id: string, record: DeepPartial<T>): Promise<T> {
+    const existingRecord = await this.findOne(id, false);
+    if (!existingRecord) {
+      throw new NotFoundException(`${ERROR_MSG.ID_NOT_FOUND} ${id}`);
+    }
     await this.repository.update(id, record as any);
     const updatedRecord = await this.repository.findOne({
       where: { id } as any,

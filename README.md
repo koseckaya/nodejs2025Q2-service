@@ -9,105 +9,55 @@
 ## Downloading
 
 ```
-git clone https://github.com/koseckaya/nodejs2025Q2-service
+1 git clone https://github.com/koseckaya/nodejs2025Q2-service
+```
+
+```
+2 cd ./nodejs2025Q2-service
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+3 npm install
 ```
 
 ## Running application
 
-Create a `.env` file in the root directory and add the following environment variables:
+4 Create a `.env` file in the root directory and add the following environment variables:
 
 ```
 PORT=4000
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=library
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin
+
 ```
 
-### Running application in Docker
-
-1. Build the images:
+5 Build and start the application:
 
 ```bash
-docker-compose build
+docker compose build
+docker compose up
 ```
 
-2. Scan images for vulnerabilities:
+By default, the application will run on port 4000, in development mode, so it will automatically restart when you make changes to the code in the `src` directory.
+
+6 To stop the application:
 
 ```bash
-# Install docker scan if not available
-docker scan --version || curl -fsSL https://raw.githubusercontent.com/docker/scan-cli-plugin/main/install.sh | sh
-
-# Scan the images
-docker scan your-username/home-library:latest
-docker scan postgres:latest
-```
-
-3. Push images to Docker Hub:
-
-```bash
-# Login to Docker Hub
-docker login
-
-# Tag images
-docker tag home-library:latest your-username/home-library:latest
-
-# Push images
-docker push your-username/home-library:latest
-```
-
-4. Run the application:
-
-```bash
-docker-compose up
-```
-
-The app will be available on http://localhost:4000
-
-### Running application locally
-
-1. Install PostgreSQL locally
-2. Create database
-3. Update .env file with your local PostgreSQL credentials
-4. Run the application:
-
-```bash
-npm run start:dev
+docker compose down
 ```
 
 ## Testing
 
-After application running open new terminal and enter:
+After starting the application, you can run the tests:
 
 To run all tests without authorization
 
 ```
 npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format
