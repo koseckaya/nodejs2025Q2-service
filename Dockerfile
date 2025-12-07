@@ -21,10 +21,12 @@ RUN npm ci --only=production && \
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/doc/api.yaml ./dist/doc/api.yaml
-COPY docker-entrypoint.sh .
+COPY docker-entrypoint.sh wait-for-it.sh ./
 
-RUN mkdir -p logs && chmod -R 777 logs && \
-  chmod +x docker-entrypoint.sh
+RUN apk add --no-cache netcat-openbsd dos2unix && \
+  dos2unix docker-entrypoint.sh wait-for-it.sh && \
+  mkdir -p logs && chmod -R 777 logs && \
+  chmod +x docker-entrypoint.sh wait-for-it.sh
 
 EXPOSE ${PORT}
 
