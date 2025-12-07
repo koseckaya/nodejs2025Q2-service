@@ -22,7 +22,24 @@ yarn-error.log
 dist
 build
 
+
+# Test files
+test
+*.spec.ts
+*.e2e-spec.ts
+jest.config.json
+
+# Logs
+logs
+*.log
+
 # Misc
 README.md
 *.md
 .DS_Store 
+
+# Docker files
+Dockerfile
+Dockerfile.dev
+docker-compose.yml
+.dockerignore

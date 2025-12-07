@@ -2,21 +2,33 @@
 services:
   app:
     container_name: home-library-app
-    image: koseckaya/nodejs-service:latest
+    image: interika/nodejs-service:latest
     ports:
       - "${PORT}:${PORT}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
     environment:
       - PORT=${PORT}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./logs:/app/logs
+        - ./src:/app/src
+        - ./doc:/app/doc
+        - ./logs:/app/logs
+        - ./package.json:/app/package.json:ro
+        - ./package-lock.json:/app/package-lock.json:ro
+        - ./tsconfig.json:/app/tsconfig.json:ro
+        - ./typeorm.config.ts:/app/typeorm.config.ts:ro
+        - /app/node_modules
     networks:
       - home-library-network
     restart: unless-stopped
@@ -25,14 +37,13 @@ services:
   postgres:
     container_name: home-library-db
     image: postgres:15-alpine
-    ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_USER}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     networks:
       - home-library-network
     healthcheck:
@@ -42,9 +53,9 @@ services:
       retries: 5
     restart: unless-stopped
 
-  volumes:
-    postgres_data:
+volumes:
+  postgres:
 
-  networks:
-    home-library-network:
-      driver: bridge 
+networks:
+  home-library-network:
+    driver: bridge 

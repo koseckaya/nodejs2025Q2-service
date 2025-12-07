@@ -74,6 +74,29 @@ npm run format
 
 The service provides the following functionality:
 
+## Vulnerability Scanning
+
+The project includes npm scripts for vulnerability scanning:
+
+```bash
+# Check for vulnerabilities and outdated packages (without fixing)
+npm run scan
+
+# Automatically fix vulnerabilities and update packages
+npm run scan:fix
+```
+
+The `scan` script performs:
+
+- Security audit of dependencies
+- Dry run of vulnerability fixes
+- Check for outdated packages
+
+The `scan:fix` script performs:
+
+- Automatic fixing of vulnerabilities
+- Update of packages to their latest compatible versions
+
 ### Users
 
 - Get all users
