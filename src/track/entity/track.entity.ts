@@ -1,31 +1,41 @@
 import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsString,
-  IsUUID,
-} from 'class-validator';
-import { ERROR_MSG } from 'src/constants';
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Artist } from '../../artist/entity/artist.entity';
+import { Album } from '../../album/entity/album.entity';
+import { Expose } from 'class-transformer';
 
+@Entity('tracks')
 export class Track {
-  @IsUUID(4)
+  @PrimaryGeneratedColumn('uuid')
+  @Expose()
   id: string;
 
-  @IsString()
-  @IsNotEmpty({ message: ERROR_MSG.TRACK_CREATE_INVALID_DATA })
+  @Column()
+  @Expose()
   name: string;
 
-  @IsUUID(4)
-  @IsOptional()
-  artistId?: string | null = null;
+  @ManyToOne(() => Artist, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'artistId' })
+  artist: Artist;
 
-  @IsUUID(4)
-  @IsOptional()
-  albumId?: string | null = null;
+  @Column({ nullable: true })
+  @Expose()
+  artistId: string;
 
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty({ message: ERROR_MSG.TRACK_CREATE_INVALID_DATA })
+  @ManyToOne(() => Album, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'albumId' })
+  album: Album;
+
+  @Column({ nullable: true })
+  @Expose()
+  albumId: string;
+
+  @Column()
+  @Expose()
   duration: number;
 }
