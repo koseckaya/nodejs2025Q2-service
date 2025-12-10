@@ -6,7 +6,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { ERROR_MSG } from 'src/constants';
+import { ERROR_MSG } from 'src/shared/constants';
 
 export class CreateAlbumDto {
   @IsString()

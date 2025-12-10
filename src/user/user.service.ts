@@ -45,4 +45,8 @@ export class UserService extends DataService<User> {
       updatedAt: new Date(),
     });
   }
+
+  async findByLogin(login: string): Promise<User | undefined> {
+    return this.repository.findOne({ where: { login } });
+  }
 }

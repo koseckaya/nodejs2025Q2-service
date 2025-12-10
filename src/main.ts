@@ -5,11 +5,17 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as yaml from 'js-yaml';
 import * as swaggerUi from 'swagger-ui-express';
+import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from './auth/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  const jwtService = app.get(JwtService);
+  const reflector = app.get(Reflector);
+
+  app.useGlobalGuards(new JwtAuthGuard(jwtService, reflector));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

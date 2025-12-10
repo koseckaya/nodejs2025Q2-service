@@ -15,8 +15,8 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { hash, compare } from 'bcrypt';
-import { SALT_ROUNDS } from 'src/constants';
+import { hash, compare } from 'bcryptjs';
+import { SALT_ROUNDS } from 'src/shared/constants';
 
 @Controller('user')
 export class UserController {

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsString, IsUUID, Min } from 'class-validator';
-import { ERROR_MSG } from '../../../src/constants';
+import { ERROR_MSG } from '../../shared/constants';
 import { CreateDateColumn, UpdateDateColumn, BeforeUpdate } from 'typeorm';
 
 @Entity('users')
@@ -11,7 +11,7 @@ export class User {
   @Expose()
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   @IsString()
   @IsNotEmpty({ message: ERROR_MSG.USER_CREATE_INVALID_DATA })
   @Expose()
