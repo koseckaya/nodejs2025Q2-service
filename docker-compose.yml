@@ -2,33 +2,36 @@
 services:
   app:
     container_name: home-library-app
-    image: interika/nodejs-service:latest
+    # image: interika/nodejs-service:latest
     ports:
       - "${PORT}:${PORT}"
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        NODE_ENV: development
+    build: .
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    #  args:
+    #    NODE_ENV: development
     environment:
       - PORT=${PORT}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_SECRET_REFRESH_KEY=${JWT_SECRET_REFRESH_KEY}
+      - TOKEN_EXPIRE_TIME=${TOKEN_EXPIRE_TIME}
+      - TOKEN_REFRESH_EXPIRE_TIME=${TOKEN_REFRESH_EXPIRE_TIME}
+      - LOG_FILE_SIZE_KB=${LOG_FILE_SIZE_KB}
+      - LOG_LEVEL=${LOG_LEVEL}
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-        - ./src:/app/src
-        - ./doc:/app/doc
-        - ./logs:/app/logs
-        - ./package.json:/app/package.json:ro
-        - ./package-lock.json:/app/package-lock.json:ro
-        - ./tsconfig.json:/app/tsconfig.json:ro
-        - ./typeorm.config.ts:/app/typeorm.config.ts:ro
-        - /app/node_modules
+      - ./src:/app/src
+      - ./doc:/app/doc
+      - ./logs:/app/logs
+      - /app/node_modules
     networks:
       - home-library-network
     restart: unless-stopped

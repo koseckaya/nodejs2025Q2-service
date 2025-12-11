@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ERROR_MSG } from 'src/constants';
+import { ERROR_MSG } from 'src/shared/constants';
 
 export class CreateUserDto {
   @IsString()

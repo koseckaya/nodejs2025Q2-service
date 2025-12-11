@@ -1,20 +1,41 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as yaml from 'js-yaml';
 import * as swaggerUi from 'swagger-ui-express';
+import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from './auth/auth.guard';
+import { LoggingService } from './logger/logger.service';
+import { AllExceptionsFilter } from './logger/logger.filter';
+import { LoggingMiddleware } from './logger/logger.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  const loggingService = app.get(LoggingService);
+  const jwtService = app.get(JwtService);
+  const reflector = app.get(Reflector);
+  const loggerService = app.get(LoggingService);
+  const adapterHost = app.get(HttpAdapterHost);
+
+  app.useGlobalGuards(new JwtAuthGuard(jwtService, reflector));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
     }),
+  );
+  app.useGlobalInterceptors(new LoggingMiddleware(loggerService));
+  app.useGlobalFilters(new AllExceptionsFilter(adapterHost, loggerService));
+
+  process.on('unhandledRejection', (e) =>
+    loggingService.error(JSON.stringify(e)),
+  );
+  process.on('uncaughtException', (e) =>
+    loggingService.error(JSON.stringify(e)),
   );
 
   const filePath = path.join(__dirname, '../doc/api.yaml');

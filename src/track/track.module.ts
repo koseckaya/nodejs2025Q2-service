@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Track } from './entity/track.entity';
 import { ArtistModule } from 'src/artist/artist.module';
 import { AlbumModule } from 'src/album/album.module';
+import { LoggerModule } from 'src/logger/logger.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Track]),
@@ -13,6 +14,7 @@ import { AlbumModule } from 'src/album/album.module';
     forwardRef(() => FavoritesModule),
     ArtistModule,
     AlbumModule,
+    LoggerModule,
   ],
   controllers: [TrackController],
   providers: [TrackService],

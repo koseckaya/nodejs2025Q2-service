@@ -1,5 +1,5 @@
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { ERROR_MSG } from 'src/constants';
+import { ERROR_MSG } from 'src/shared/constants';
 
 export class UpdateArtistDto {
   @IsString()

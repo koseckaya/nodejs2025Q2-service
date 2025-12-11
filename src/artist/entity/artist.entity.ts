@@ -1,5 +1,5 @@
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { ERROR_MSG } from 'src/constants';
+import { ERROR_MSG } from 'src/shared/constants';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Album } from '../../album/entity/album.entity';
 import { Track } from '../../track/entity/track.entity';
