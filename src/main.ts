@@ -14,6 +14,7 @@ import { LoggingMiddleware } from './logger/logger.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const loggingService = app.get(LoggingService);
   const jwtService = app.get(JwtService);
   const reflector = app.get(Reflector);
   const loggerService = app.get(LoggingService);
@@ -29,6 +30,13 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new LoggingMiddleware(loggerService));
   app.useGlobalFilters(new AllExceptionsFilter(adapterHost, loggerService));
+
+  process.on('unhandledRejection', (e) =>
+    loggingService.error(JSON.stringify(e)),
+  );
+  process.on('uncaughtException', (e) =>
+    loggingService.error(JSON.stringify(e)),
+  );
 
   const filePath = path.join(__dirname, '../doc/api.yaml');
   const altFilePath = path.join(process.cwd(), 'doc/api.yaml');

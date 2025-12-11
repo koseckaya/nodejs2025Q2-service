@@ -31,12 +31,12 @@ export class AuthService {
     const payload = { userId: user.id, login: user.login };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET_KEY,
-      expiresIn: process.env.TOKEN_EXPIRE_TIME,
-    });
+      expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
+    } as any);
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET_REFRESH_KEY,
-      expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
-    });
+      expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
+    } as any);
     return { accessToken, refreshToken };
   }
 
@@ -49,12 +49,12 @@ export class AuthService {
       const newPayload = { userId: user.id, login: user.login };
       const accessToken = await this.jwtService.signAsync(newPayload, {
         secret: process.env.JWT_SECRET_KEY,
-        expiresIn: process.env.TOKEN_EXPIRE_TIME,
-      });
+        expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
+      } as any);
       const newRefreshToken = await this.jwtService.signAsync(newPayload, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,
-        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
-      });
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
+      } as any);
       return { accessToken, refreshToken: newRefreshToken };
     } catch {
       throw new ForbiddenException(ERROR_MSG.AUTH_INVALID_REFRESH_TOKEN);

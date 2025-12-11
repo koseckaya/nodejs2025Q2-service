@@ -35,11 +35,13 @@ export class AuthController {
     return this.authService.login(body);
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() body: { refreshToken: string }) {
-    if (!body.refreshToken)
+    if (!body?.refreshToken) {
       throw new UnauthorizedException(ERROR_MSG.AUTH_INVALID_REFRESH_TOKEN);
+    }
     return this.authService.refresh(body.refreshToken);
   }
 }

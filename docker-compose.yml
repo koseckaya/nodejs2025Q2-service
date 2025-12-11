@@ -2,14 +2,15 @@
 services:
   app:
     container_name: home-library-app
-    image: interika/nodejs-service:latest
+    # image: interika/nodejs-service:latest
     ports:
       - "${PORT}:${PORT}"
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        NODE_ENV: development
+    build: .
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    #  args:
+    #    NODE_ENV: development
     environment:
       - PORT=${PORT}
       - POSTGRES_HOST=${POSTGRES_HOST}
@@ -27,14 +28,10 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-        - ./src:/app/src
-        - ./doc:/app/doc
-        - ./logs:/app/logs
-        - ./package.json:/app/package.json:ro
-        - ./package-lock.json:/app/package-lock.json:ro
-        - ./tsconfig.json:/app/tsconfig.json:ro
-        - ./typeorm.config.ts:/app/typeorm.config.ts:ro
-        - /app/node_modules
+      - ./src:/app/src
+      - ./doc:/app/doc
+      - ./logs:/app/logs
+      - /app/node_modules
     networks:
       - home-library-network
     restart: unless-stopped

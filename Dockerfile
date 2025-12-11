@@ -2,7 +2,7 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json tsconfig.json tsconfig.build.json ./
 
 RUN npm ci
 
@@ -14,7 +14,7 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json tsconfig.json tsconfig.build.json ./
 
 RUN npm ci --only=production && \
   npm cache clean --force
