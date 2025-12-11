@@ -46,7 +46,16 @@ export class AuthService {
       const user = await this.userService.findOne(payload.userId);
       if (!user)
         throw new ForbiddenException(ERROR_MSG.AUTH_INVALID_REFRESH_TOKEN);
-      return this.login(user);
+      const newPayload = { userId: user.id, login: user.login };
+      const accessToken = await this.jwtService.signAsync(newPayload, {
+        secret: process.env.JWT_SECRET_KEY,
+        expiresIn: process.env.TOKEN_EXPIRE_TIME,
+      });
+      const newRefreshToken = await this.jwtService.signAsync(newPayload, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+      });
+      return { accessToken, refreshToken: newRefreshToken };
     } catch {
       throw new ForbiddenException(ERROR_MSG.AUTH_INVALID_REFRESH_TOKEN);
     }
