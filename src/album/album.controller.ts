@@ -13,10 +13,14 @@ import {
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { LoggingService } from 'src/logger/logger.service';
 
 @Controller('album')
 export class AlbumController {
-  constructor(private readonly albumService: AlbumService) {}
+  constructor(
+    private readonly albumService: AlbumService,
+    private readonly logger: LoggingService,
+  ) {}
 
   @Get()
   findAll() {
@@ -31,6 +35,9 @@ export class AlbumController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createAlbumDto: CreateAlbumDto) {
+    this.logger.verbose(
+      `[AlbumController] create called with data: ${JSON.stringify(createAlbumDto)}`,
+    );
     return this.albumService.create(createAlbumDto);
   }
 
@@ -39,12 +46,16 @@ export class AlbumController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
+    this.logger.verbose(
+      `[AlbumController] update called with id: ${id} and data: ${JSON.stringify(updateAlbumDto)}`,
+    );
     return this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseUUIDPipe) id: string) {
+    this.logger.verbose(`[AlbumController] remove called with id: ${id}`);
     return this.albumService.remove(id);
   }
 }

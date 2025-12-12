@@ -6,6 +6,7 @@ import { AlbumModule } from '../album/album.module';
 import { ArtistModule } from '../artist/artist.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Favorites } from './entity/favorites.entity';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Favorites } from './entity/favorites.entity';
     forwardRef(() => TrackModule),
     forwardRef(() => AlbumModule),
     forwardRef(() => ArtistModule),
+    LoggerModule,
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],
