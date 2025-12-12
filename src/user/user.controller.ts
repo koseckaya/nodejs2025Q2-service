@@ -18,6 +18,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { hash, compare } from 'bcryptjs';
 import { SALT_ROUNDS } from 'src/shared/constants';
 import { LoggingService } from 'src/logger/logger.service';
+import { sanitize } from 'src/shared/sanitaze';
 
 @Controller('user')
 export class UserController {
@@ -46,7 +47,7 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto) {
     this.logger.verbose(
-      `[UserController] create called with data: ${JSON.stringify(createUserDto)}`,
+      `[UserController] create called with data: ${JSON.stringify(sanitize(createUserDto))}`,
     );
     const passwordHash = await hash(createUserDto.password, SALT_ROUNDS);
     return this.userService.create({
@@ -61,7 +62,7 @@ export class UserController {
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     this.logger.verbose(
-      `[UserController] updatePassword called with id: ${id} and data: ${JSON.stringify(updatePasswordDto)}`,
+      `[UserController] updatePassword called with id: ${id} and data: ${JSON.stringify(sanitize(updatePasswordDto))}`,
     );
     const user = await this.userService.findOne(id);
     if (!user) {

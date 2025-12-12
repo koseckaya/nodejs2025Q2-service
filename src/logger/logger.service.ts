@@ -1,6 +1,7 @@
 import { Injectable, LoggerService, LogLevel } from '@nestjs/common';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+import { sanitize } from 'src/shared/sanitaze';
 
 const LOG_LEVELS: LogLevel[] = ['error', 'warn', 'log', 'debug', 'verbose'];
 
@@ -60,7 +61,12 @@ export class LoggingService implements LoggerService {
     optionalParams: any[],
     isError = false,
   ) {
-    const logMsg = `[${new Date().toISOString()}] [${level}] ${typeof message === 'string' ? message : JSON.stringify(message)} ${optionalParams.length ? JSON.stringify(optionalParams) : ''}\n`;
+    const safeBody =
+      typeof message === 'string'
+        ? sanitize(message)
+        : sanitize(JSON.stringify(message));
+    const logMsg = `[${new Date().toISOString()}] [${level}] ${safeBody} ${optionalParams.length ? JSON.stringify(optionalParams) : ''}\n`;
+
     await this.appendWithRotation(
       this.logFile,
       logMsg,
@@ -79,7 +85,6 @@ export class LoggingService implements LoggerService {
         },
       );
     }
-    if (process.env.LOG_TO_STDOUT === 'true') process.stdout.write(logMsg);
   }
 
   private async appendWithRotation(

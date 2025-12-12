@@ -7,6 +7,7 @@ import {
 import { LoggingService } from './logger.service';
 import { Observable, tap } from 'rxjs';
 import { formatData } from 'src/shared/format-data';
+import { sanitize } from 'src/shared/sanitaze';
 
 @Injectable()
 export class LoggingMiddleware implements NestInterceptor {
@@ -25,14 +26,14 @@ export class LoggingMiddleware implements NestInterceptor {
           `[HttpInterceptor Request] ${formatData([
             { fieldName: 'url', fieldValue: url },
             { fieldName: 'method', fieldValue: method },
-            { fieldName: 'body', fieldValue: body },
+            { fieldName: 'body', fieldValue: sanitize(body) },
             { fieldName: 'query', fieldValue: query },
           ])}`,
         );
         this.logger.log(
           `[HttpInterceptor Response] ${formatData([
             { fieldName: 'statusCode', fieldValue: statusCode },
-            { fieldName: 'data', fieldValue: data },
+            { fieldName: 'data', fieldValue: sanitize(data) },
           ])}`,
         );
       }),
