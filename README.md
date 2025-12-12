@@ -28,10 +28,21 @@
 
 ```
 PORT=4000
+
+# Database
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
+POSTGRES_DB=home_library
+# JWT
+JWT_SECRET_KEY=your_access_secret
+JWT_SECRET_REFRESH_KEY=your_refresh_secret
+TOKEN_EXPIRE_TIME=1h
+TOKEN_REFRESH_EXPIRE_TIME=24h
+# Logging
+LOG_LEVEL=log           # Possible values: error, warn, log, debug, verbose
+LOG_FILE_SIZE_KB=10     # Max log file size in kilobytes before rotation
 
 ```
 
@@ -50,6 +61,13 @@ By default, the application will run on port 4000, in development mode, so it wi
 docker compose down
 ```
 
+## Logging
+
+- All requests and responses are logged to files in the `app/dist/logs` directory.
+- Log files are automatically rotated when they reach the size specified in `LOG_FILE_SIZE_KB`.
+- Error logs are written to a separate `error.log` file.
+- You can control the verbosity of logs using the `LOG_LEVEL` environment variable.
+
 ## Testing
 
 After starting the application, you can run the tests:
@@ -57,7 +75,7 @@ After starting the application, you can run the tests:
 To run all tests without authorization
 
 ```
-npm run test
+npm run test:auth
 ```
 
 ### Auto-fix and format
